@@ -2,13 +2,14 @@
 import React, { useEffect } from "react";
 import { DataTable } from "@/components/data-table";
 import { useHelperContext } from "@/components/providers/helper-provider";
+import { Button } from "@/components/ui/button";
 
 export default function Index() {
   const { backendClient, setTitle } = useHelperContext()();
 
   useEffect(() => {
-    setTitle("Applications")
-  })
+    setTitle("Applications");
+  });
 
   return (
     <div className="mx-5">
@@ -24,6 +25,13 @@ export default function Index() {
         href="/dashboard/application/{}"
         navigateKey="id"
         isSearchable
+        primaryButton={
+          <a href="/dashboard/application/create">
+            <Button variant="default" size="sm" onClick={() => {}}>
+              Create
+            </Button>
+          </a>
+        }
       />
     </div>
   );
