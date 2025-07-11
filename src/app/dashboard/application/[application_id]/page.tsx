@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { isErrorResponse } from '@/types/payload';
-import { FormEvent, use, useEffect, useRef } from 'react';
+import { FormEvent, use, useEffect, useRef, useState } from 'react';
 
 type PageProps = {
     params: Promise<{ application_id: string }>;
@@ -18,14 +18,18 @@ export default function Index({ params }: PageProps) {
     const { application_id } = use(params);
     const isCreatePage = application_id === 'create';
     const formRef = useRef<HTMLFormElement | null>(null);
+    const [isActive, setIsActive] = useState<boolean>(true);
 
     const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const form = formRef.current;
         const title = form?.appName?.value ?? '';
         const description = form?.description?.value ?? '';
-        const active = form?.active?.checked ?? true;
-        const response = await backendClient.createApplication(title, description, active);
+        const response = await backendClient.createApplication({
+            title,
+            description,
+            active: isActive
+        });
 
         if (isErrorResponse(response)) {
             setAlert('Error', response.error, undefined, true);
@@ -55,7 +59,11 @@ export default function Index({ params }: PageProps) {
                         <Textarea id="description" placeholder="Description" className="" />
                     </div>
                     <div className="flex items-center space-x-2">
-                        <Switch id="active" defaultChecked={true} />
+                        <Switch
+                            id="active"
+                            checked={isActive}
+                            onCheckedChange={() => setIsActive(!isActive)}
+                        />
                         <Label htmlFor="active">Active</Label>
                     </div>
 

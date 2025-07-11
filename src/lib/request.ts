@@ -1,4 +1,6 @@
 import {
+    Application,
+    ApplicationCreateRequest,
     ApplicationListResponse,
     ErrorResponse,
     initUserType,
@@ -159,16 +161,10 @@ export class BackendClient {
     }
 
     async createApplication(
-        title: string,
-        description: string,
-        active: boolean
-    ): Promise<ApplicationListResponse | ErrorResponse> {
+        payload: ApplicationCreateRequest
+    ): Promise<Application | ErrorResponse> {
         try {
-            const response = await this.client.post('/application/create', {
-                title,
-                description,
-                active
-            });
+            const response = await this.client.post('/application/create', payload);
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);

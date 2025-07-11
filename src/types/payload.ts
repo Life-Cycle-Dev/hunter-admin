@@ -4,9 +4,8 @@ export interface ErrorResponse {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isErrorResponse = (data: any): data is ErrorResponse => {
-    return typeof data.error === "string";
+    return typeof data.error === 'string';
 };
-
 
 export interface LoginRequest {
     email: string;
@@ -28,13 +27,13 @@ export interface UserType {
 }
 
 export const initUserType: UserType = {
-    id: "",
-    name: "",
-    email: "",
+    id: '',
+    name: '',
+    email: '',
     is_developer: false,
     is_email_verified: false,
-    created_at: ""
-}
+    created_at: ''
+};
 
 export interface PaginationResponse {
     page: number;
@@ -57,4 +56,10 @@ export interface ApplicationListResponse {
     data: Application[];
     pagination: PaginationResponse;
     query: string;
+}
+
+export interface ApplicationCreateRequest {
+    title: string;
+    description: string;
+    active: boolean;
 }
