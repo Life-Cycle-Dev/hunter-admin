@@ -6,7 +6,8 @@ import { AlertDialogProvider } from "@/components/providers/alert-provider";
 import { HelperProvider } from "@/components/providers/helper-provider";
 
 const kanit = Kanit({
-  weight: "300"
+  weight: "300",
+  subsets: [`latin`, `latin-ext`, `thai`, `vietnamese`],
 });
 
 export default function RootLayout({
@@ -16,9 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${kanit.className}`}
-      >
+      <body className={`${kanit.className}`}>
         <Suspense fallback={<div></div>}>
           <FullLoadingProvider>
             <AlertDialogProvider>
