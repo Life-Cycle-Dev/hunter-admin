@@ -20,8 +20,8 @@ export default function Page() {
         }
         columns={[
           { key: "id", label: "ID" },
-          { key: "mapping", label: "Mapping" },
           { key: "title", label: "Title" },
+          { key: "mapping", label: "Mapping" },
         ]}
         href="/dashboard/role/{}"
         navigateKey="id"
