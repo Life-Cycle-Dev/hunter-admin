@@ -128,3 +128,18 @@ export interface UpdateRoleResponse {
   permissions: Permission[];
   role: Role;
 }
+
+export interface UserView {
+  id: string;
+  email: string;
+  is_developer: boolean;
+  is_email_verified: boolean;
+  name: string;
+  role: string;
+}
+
+export interface UserListResponse {
+  data: UserView[];
+  pagination: PaginationResponse;
+  query: string;
+}

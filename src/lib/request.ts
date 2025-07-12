@@ -16,6 +16,7 @@ import {
   UpdatePermissionRequest,
   UpdateRoleRequest,
   UpdateRoleResponse,
+  UserListResponse,
   UserType,
 } from "@/types/payload";
 import axios, { AxiosInstance } from "axios";
@@ -279,6 +280,21 @@ export class BackendClient {
   ): Promise<UpdateRoleResponse | ErrorResponse> {
     try {
       const response = await this.client.put(`/role/${id}`, payload);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async getUserList(
+    page: number,
+    perPage: number,
+    query: string,
+  ): Promise<UserListResponse | ErrorResponse> {
+    try {
+      const response = await  this.client.get(
+        `/user/list?page=${page}&perPage=${perPage}&query=${query}`,
+      );
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);
