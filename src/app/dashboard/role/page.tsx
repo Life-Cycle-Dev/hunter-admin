@@ -1,6 +1,8 @@
 "use client";
 import { DataTable } from "@/components/data-table";
 import { useHelperContext } from "@/components/providers/helper-provider";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 import { useEffect } from "react";
 
 export default function Page() {
@@ -21,9 +23,16 @@ export default function Page() {
           { key: "title", label: "Title" },
           { key: "id", label: "ID" },
         ]}
-        href="/dashboard/permission/{}"
+        href="/dashboard/role/{}"
         navigateKey="id"
         isSearchable
+        primaryButton={
+          <Link href="/dashboard/role/create">
+            <Button variant="default" size="sm">
+              Create
+            </Button>
+          </Link>
+        }
       />
     </div>
   );
