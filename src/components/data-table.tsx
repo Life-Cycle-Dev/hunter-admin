@@ -32,7 +32,7 @@ interface DataTableProps<T> {
     href?: string;
     navigateKey?: keyof T;
     isSearchable?: boolean;
-    primaryButton: React.ReactNode;
+    primaryButton?: React.ReactNode;
 }
 
 interface PaginatedResponse<T> {

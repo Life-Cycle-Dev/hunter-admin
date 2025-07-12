@@ -1,5 +1,8 @@
 "use client";
 
+import { BackendClient } from "@/lib/request";
+import { initUserType, isErrorResponse, UserType } from "@/types/payload";
+import { useRouter } from "next/navigation";
 import {
   createContext,
   ReactNode,
@@ -10,9 +13,6 @@ import {
 } from "react";
 import { useAlertContext } from "./alert-provider";
 import { useFullLoadingContext } from "./full-loading-provider";
-import { BackendClient } from "@/lib/request";
-import { useRouter } from "next/navigation";
-import { initUserType, isErrorResponse, UserType } from "@/types/payload";
 
 interface HelperContextType {
   setAlert: (
@@ -91,7 +91,11 @@ export function HelperProvider({ children }: { children: ReactNode }) {
   );
 
   const onSetTitle = (text: string) => {
-    document.title = text;
+    if (!text) {
+      document.title = "Hunter App";
+      setTitle("Hunter App");
+    }
+    document.title = "Hunter - " + text;
     setTitle(text);
   };
 
