@@ -39,13 +39,13 @@ export default function Page({ params }: PageProps) {
     setDefaultValue(response);
   };
 
-  const onSubmit = async (values: Record<string, string>) => {
+  const onSubmit = async (values: Record<string, unknown>) => {
     setFullLoading(true);
 
     if (isCreatePage) {
       const response = await backendClient.createPermission({
-        title: values.title ?? "",
-        mapping: values.mapping ?? "",
+        title: values.title as string ?? "",
+        mapping: values.mapping as string ?? "",
       });
 
       setFullLoading(false);
@@ -54,8 +54,8 @@ export default function Page({ params }: PageProps) {
       }
     } else {
       const response = await backendClient.updatePermission(permissionId, {
-        title: values.title ?? "",
-        mapping: values.mapping ?? "",
+        title: values.title as string ?? "",
+        mapping: values.mapping as string ?? "",
       });
       setFullLoading(false);
       if (isErrorResponse(response)) {

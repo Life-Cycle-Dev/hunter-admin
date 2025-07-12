@@ -3,7 +3,10 @@ import {
   ApplicationCreateRequest,
   ApplicationListResponse,
   CreatePermissionRequest,
+  CreateRoleRequest,
+  CreateRoleResponse,
   ErrorResponse,
+  GetRoleByIdResponse,
   initUserType,
   LoginRequest,
   LoginResponse,
@@ -11,6 +14,8 @@ import {
   PermissionListResponse,
   RoleListResponse,
   UpdatePermissionRequest,
+  UpdateRoleRequest,
+  UpdateRoleResponse,
   UserType,
 } from "@/types/payload";
 import axios, { AxiosInstance } from "axios";
@@ -242,6 +247,38 @@ export class BackendClient {
   ): Promise<Permission | ErrorResponse> {
     try {
       const response = await this.client.put(`/permission/${id}`, payload);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async createRole(
+    payload: CreateRoleRequest,
+  ): Promise<CreateRoleResponse | ErrorResponse> {
+    try {
+      const response = await this.client.post("/role/create", payload);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async getRoleById(id: string): Promise<GetRoleByIdResponse | ErrorResponse> {
+    try {
+      const response = await this.client.get(`/role/${id}`);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async updateRole(
+    id: string,
+    payload: UpdateRoleRequest,
+  ): Promise<UpdateRoleResponse | ErrorResponse> {
+    try {
+      const response = await this.client.put(`/role/${id}`, payload);
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);
