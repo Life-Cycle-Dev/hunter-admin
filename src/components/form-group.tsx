@@ -100,8 +100,8 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                     <div className="flex items-center gap-3" key={index}>
                       <Checkbox
                         id={`${value.id}_${option.value}`}
-                        name={value.id} // <-- group by id
-                        value={option.value} // <-- submit value
+                        name={value.id}
+                        value={option.value}
                         defaultChecked={checked}
                       />
                       <Label htmlFor={`${value.id}_${option.value}`}>
