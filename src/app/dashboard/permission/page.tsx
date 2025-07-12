@@ -19,19 +19,19 @@ export default function Page() {
           backendClient.getPermissionList(page, perPage, query)
         }
         columns={[
-          { key: "mapping", label: "Mapping" },
-          { key: "title", label: "Title" },
           { key: "id", label: "ID" },
+          { key: "title", label: "Title" },
+          { key: "mapping", label: "Mapping" },
         ]}
         href="/dashboard/permission/{}"
         navigateKey="id"
         isSearchable
         primaryButton={
-            <Link href="/dashboard/permission/create">
-                <Button variant="default" size="sm">
-                    Create
-                </Button>
-            </Link>
+          <Link href="/dashboard/permission/create">
+            <Button variant="default" size="sm">
+              Create
+            </Button>
+          </Link>
         }
       />
     </div>

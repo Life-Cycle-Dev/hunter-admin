@@ -19,9 +19,9 @@ export default function Page() {
           backendClient.getRoleList(page, perPage, query)
         }
         columns={[
+          { key: "id", label: "ID" },
           { key: "mapping", label: "Mapping" },
           { key: "title", label: "Title" },
-          { key: "id", label: "ID" },
         ]}
         href="/dashboard/role/{}"
         navigateKey="id"

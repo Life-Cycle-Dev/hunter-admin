@@ -91,3 +91,13 @@ export interface RoleListResponse {
     pagination: PaginationResponse;
     query: string;
 }
+
+export interface CreatePermissionRequest {
+    title: string;
+    mapping: string;
+}
+
+export interface UpdatePermissionRequest {
+    title: string;
+    mapping: string;
+}
