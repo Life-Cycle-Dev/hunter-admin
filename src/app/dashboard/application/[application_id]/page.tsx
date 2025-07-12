@@ -46,17 +46,17 @@ export default function Index({ params }: PageProps) {
         <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="py-4 px-5 w-full  flex flex-col items-center"
+            className="py-4 px-5 w-full flex flex-col items-center"
         >
             {isCreatePage ? (
                 <div className="max-w-[600px] w-full flex flex-col gap-4">
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="appName">Application Name</Label>
-                        <Input id="appName" placeholder="Application Name" className="" />
+                        <Input id="appName" placeholder="Application Name" />
                     </div>
                     <div className="flex flex-col gap-2">
                         <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" placeholder="Description" className="" />
+                        <Textarea id="description" placeholder="Description" />
                     </div>
                     <div className="flex items-center space-x-2">
                         <Switch

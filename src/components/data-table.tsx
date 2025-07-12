@@ -21,7 +21,6 @@ import {
 import { ErrorResponse, isErrorResponse, PaginationResponse } from '@/types/payload';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
-import { useHelperContext } from './providers/helper-provider';
 
 interface DataTableProps<T> {
     fetchData: (
@@ -50,7 +49,6 @@ export function DataTable<T>({
     isSearchable,
     primaryButton
 }: DataTableProps<T>) {
-    const { setAlert } = useHelperContext()();
     const router = useRouter();
     const searchParams = useSearchParams();
     const initialQuery = searchParams.get('query') || '';
