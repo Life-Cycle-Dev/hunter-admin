@@ -6,6 +6,8 @@ import {
     initUserType,
     LoginRequest,
     LoginResponse,
+    PermissionListResponse,
+    RoleListResponse,
     UserType
 } from '@/types/payload';
 import axios, { AxiosInstance } from 'axios';
@@ -165,6 +167,36 @@ export class BackendClient {
     ): Promise<Application | ErrorResponse> {
         try {
             const response = await this.client.post('/application/create', payload);
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async getPermissionList(
+        page: number,
+        perPage: number,
+        query: string
+    ): Promise<PermissionListResponse | ErrorResponse> {
+        try {
+            const response = await this.client.get(
+                `/permission/list?page=${page}&perPage=${perPage}&query=${query}`
+            );
+            return response.data;
+        } catch (e) {
+            return handlerError(e, this.setAlert);
+        }
+    }
+
+    async getRoleList(
+        page: number,
+        perPage: number,
+        query: string
+    ): Promise<RoleListResponse | ErrorResponse> {
+        try {
+            const response = await this.client.get(
+                `/role/list?page=${page}&perPage=${perPage}&query=${query}`
+            );
             return response.data;
         } catch (e) {
             return handlerError(e, this.setAlert);

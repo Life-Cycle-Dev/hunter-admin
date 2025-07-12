@@ -63,3 +63,31 @@ export interface ApplicationCreateRequest {
     description: string;
     active: boolean;
 }
+
+export interface Permission {
+    id: string;
+    title: string;
+    mapping: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface PermissionListResponse {
+    data: Permission[];
+    pagination: PaginationResponse;
+    query: string;
+}
+
+export interface Role {
+    id: string;
+    title: string;
+    mapping: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface RoleListResponse {
+    data: Role[];
+    pagination: PaginationResponse;
+    query: string;
+}
