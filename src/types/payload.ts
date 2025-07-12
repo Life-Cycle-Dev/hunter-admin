@@ -23,6 +23,8 @@ export interface UserType {
   email: string;
   is_developer: boolean;
   is_email_verified: boolean;
+  role: string;
+  permissions: string[];
   created_at: string;
 }
 
@@ -32,6 +34,8 @@ export const initUserType: UserType = {
   email: "",
   is_developer: false,
   is_email_verified: false,
+  role: "User",
+  permissions: [],
   created_at: "",
 };
 
