@@ -3,9 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import React, { FormEvent, useEffect, useRef, useState } from "react";
-import { Switch } from "./ui/switch";
 
 export interface SelectOption {
   label: string;
@@ -13,7 +20,7 @@ export interface SelectOption {
 }
 
 interface Form {
-  type: "text" | "textarea" | "checkbox" | "switch";
+  type: "text" | "textarea" | "checkbox" | "switch" | "select";
   id: string;
   label: string;
   defaultValue?: string | string[] | boolean;
@@ -32,6 +39,7 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
   const [switchValues, setSwitchValues] = useState<Record<string, boolean>>({});
+  const [selectValues, setSelectValues] = useState<Record<string, string>>({});
 
   useEffect(() => {
     setSwitchValues(
@@ -42,6 +50,15 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
         }
         return acc;
       }, {} as Record<string, boolean>),
+    );
+    setSelectValues(
+      items.reduce((acc, item) => {
+        if (item.type === "select") {
+          acc[item.id] =
+            typeof item.defaultValue === "string" ? item.defaultValue : "";
+        }
+        return acc;
+      }, {} as Record<string, string>),
     );
   }, [items]);
 
@@ -55,6 +72,8 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
         values[item.id] = checkedValues;
       } else if (item.type === "switch") {
         values[item.id] = switchValues[item.id];
+      } else if (item.type === "select") {
+        values[item.id] = selectValues[item.id] ?? "";
       } else {
         const value = formData.get(item.id);
         if (value !== null) {
@@ -152,6 +171,33 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                   }}
                   disabled={value.disabled ?? false}
                 />
+              </div>
+            )}
+
+            {value.type === "select" && value.options && (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={value.id}>{value.label}</Label>
+                <Select
+                  value={selectValues[value.id] ?? ""}
+                  onValueChange={(val) => {
+                    setSelectValues((prev) => ({ ...prev, [value.id]: val }));
+                    value.onchange?.(val);
+                  }}
+                  disabled={value.disabled ?? false}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={value.label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {value.options.map((option, index) => {
+                      return (
+                        <SelectItem value={option.value} key={index}>
+                          {option.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             )}
           </React.Fragment>

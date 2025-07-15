@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import FormGroup from "@/components/form-group";
+import FormGroup, { SelectOption } from "@/components/form-group";
 import { useHelperContext } from "@/components/providers/helper-provider";
 import { GetUserByIdResponse, isErrorResponse } from "@/types/payload";
 import { use, useEffect, useState } from "react";
@@ -16,9 +16,23 @@ export default function Page({ params }: PageProps) {
     useHelperContext()();
   const [defaultValue, setDefaultValue] =
     useState<GetUserByIdResponse | null>();
+  const [roles, setRoles] = useState<SelectOption[]>([]);
 
   const onSubmit = async (values: Record<string, unknown>) => {
-    console.log(values);
+    setFullLoading(true);
+    const response = await backendClient.updateUserById(userId, {
+      name: values.name as string,
+      email: values.email as string,
+      is_developer: values.is_developer as boolean,
+      is_email_verified: values.is_email_verified as boolean,
+      role_id: values.role_id as string,
+    });
+    setFullLoading(false);
+    if (isErrorResponse(response)) {
+      router.push("/dashboard/user");
+      return;
+    }
+    fetchDefaultValue();
   };
 
   useEffect(() => {
@@ -27,6 +41,20 @@ export default function Page({ params }: PageProps) {
 
   const fetchDefaultValue = async () => {
     setFullLoading(true);
+
+    const roles = await backendClient.getRoleList(1, 1000, "");
+    if (isErrorResponse(roles)) {
+      router.push("/dashboard/user");
+      return;
+    }
+
+    const roleOptions = roles.data.map((role) => {
+      return {
+        label: role.title,
+        value: role.id,
+      };
+    });
+
     const response = await backendClient.getUserById(userId);
     setFullLoading(false);
 
@@ -35,7 +63,8 @@ export default function Page({ params }: PageProps) {
       return;
     }
 
-    setTitle(response.name);    
+    setRoles(roleOptions);
+    setTitle(response.name);
     setDefaultValue(response);
   };
 
@@ -56,10 +85,11 @@ export default function Page({ params }: PageProps) {
             defaultValue: defaultValue?.email,
           },
           {
-            type: "text",
-            id: "role",
+            type: "select",
+            options: roles,
+            id: "role_id",
             label: "Role",
-            defaultValue: defaultValue?.role?.title ?? "User",
+            defaultValue: defaultValue?.role?.id,
           },
           {
             type: "switch",

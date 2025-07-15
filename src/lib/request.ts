@@ -17,6 +17,8 @@ import {
   UpdatePermissionRequest,
   UpdateRoleRequest,
   UpdateRoleResponse,
+  UpdateUserByIdRequest,
+  UpdateUserByIdResponse,
   UserListResponse,
   UserType,
 } from "@/types/payload";
@@ -305,6 +307,18 @@ export class BackendClient {
   async getUserById(id: string): Promise<GetUserByIdResponse | ErrorResponse> {
     try {
       const response = await this.client.get(`/user/${id}`);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async updateUserById(
+    id: string,
+    payload: UpdateUserByIdRequest,
+  ): Promise<UpdateUserByIdResponse | ErrorResponse> {
+    try {
+      const response = await this.client.put(`/user/${id}`, payload);
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);

@@ -160,3 +160,24 @@ export interface GetUserByIdResponse {
   created_at: string;
   updated_at: string;
 }
+
+export interface UpdateUserByIdRequest {
+  name: string;
+  email: string;
+  is_developer: boolean;
+  is_email_verified: boolean;
+  role_id: string;
+}
+
+export interface UpdateUserByIdResponse {
+  id: string;
+  name: string;
+  email: string;
+  is_developer: boolean;
+  is_email_verified: boolean;
+  role_id: string;
+  role: Role;
+  permissions: Permission[];
+  created_at: string;
+  updated_at: string;
+}
