@@ -7,6 +7,7 @@ import {
   CreateRoleResponse,
   ErrorResponse,
   GetRoleByIdResponse,
+  GetUserByIdResponse,
   initUserType,
   LoginRequest,
   LoginResponse,
@@ -292,9 +293,18 @@ export class BackendClient {
     query: string,
   ): Promise<UserListResponse | ErrorResponse> {
     try {
-      const response = await  this.client.get(
+      const response = await this.client.get(
         `/user/list?page=${page}&perPage=${perPage}&query=${query}`,
       );
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async getUserById(id: string): Promise<GetUserByIdResponse | ErrorResponse> {
+    try {
+      const response = await this.client.get(`/user/${id}`);
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);
