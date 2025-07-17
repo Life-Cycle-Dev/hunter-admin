@@ -24,8 +24,8 @@ export default function Page() {
           { key: "is_developer", label: "Is developer?" },
           { key: "is_email_verified", label: "Is email verified?" },
         ]}
-        // href="/dashboard/user/{}"
-        // navigateKey="id"
+        href="/dashboard/user/{}"
+        navigateKey="id"
         isSearchable
       />
     </div>
