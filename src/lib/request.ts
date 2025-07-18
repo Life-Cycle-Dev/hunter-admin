@@ -9,8 +9,10 @@ import {
   GetRoleByIdResponse,
   GetUserByIdResponse,
   initUserType,
+  isErrorResponse,
   LoginRequest,
   LoginResponse,
+  LogoutResponse,
   Permission,
   PermissionListResponse,
   RoleListResponse,
@@ -319,6 +321,19 @@ export class BackendClient {
   ): Promise<UpdateUserByIdResponse | ErrorResponse> {
     try {
       const response = await this.client.put(`/user/${id}`, payload);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async logout(): Promise<LogoutResponse | ErrorResponse> {
+    try {
+      const response = await this.client.post("/auth/logout");
+      if (!isErrorResponse(response)) {
+        removeItem("refresh_token");
+        removeItem("access_token");
+      }
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);

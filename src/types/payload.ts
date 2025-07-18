@@ -181,3 +181,7 @@ export interface UpdateUserByIdResponse {
   created_at: string;
   updated_at: string;
 }
+
+export interface LogoutResponse {
+  status: string;
+}
