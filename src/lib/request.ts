@@ -7,15 +7,20 @@ import {
   CreateRoleResponse,
   ErrorResponse,
   GetRoleByIdResponse,
+  GetUserByIdResponse,
   initUserType,
+  isErrorResponse,
   LoginRequest,
   LoginResponse,
+  LogoutResponse,
   Permission,
   PermissionListResponse,
   RoleListResponse,
   UpdatePermissionRequest,
   UpdateRoleRequest,
   UpdateRoleResponse,
+  UpdateUserByIdRequest,
+  UpdateUserByIdResponse,
   UserListResponse,
   UserType,
 } from "@/types/payload";
@@ -292,9 +297,43 @@ export class BackendClient {
     query: string,
   ): Promise<UserListResponse | ErrorResponse> {
     try {
-      const response = await  this.client.get(
+      const response = await this.client.get(
         `/user/list?page=${page}&perPage=${perPage}&query=${query}`,
       );
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async getUserById(id: string): Promise<GetUserByIdResponse | ErrorResponse> {
+    try {
+      const response = await this.client.get(`/user/${id}`);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async updateUserById(
+    id: string,
+    payload: UpdateUserByIdRequest,
+  ): Promise<UpdateUserByIdResponse | ErrorResponse> {
+    try {
+      const response = await this.client.put(`/user/${id}`, payload);
+      return response.data;
+    } catch (e) {
+      return handlerError(e, this.setAlert);
+    }
+  }
+
+  async logout(): Promise<LogoutResponse | ErrorResponse> {
+    try {
+      const response = await this.client.post("/auth/logout");
+      if (!isErrorResponse(response)) {
+        removeItem("refresh_token");
+        removeItem("access_token");
+      }
       return response.data;
     } catch (e) {
       return handlerError(e, this.setAlert);

@@ -3,8 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import React, { FormEvent, useRef } from "react";
+import React, { FormEvent, useEffect, useRef, useState } from "react";
 
 export interface SelectOption {
   label: string;
@@ -12,13 +20,14 @@ export interface SelectOption {
 }
 
 interface Form {
-  type: "text" | "textarea" | "checkbox";
+  type: "text" | "textarea" | "checkbox" | "switch" | "select";
   id: string;
   label: string;
-  defaultValue?: string | string[];
+  defaultValue?: string | string[] | boolean;
   required?: boolean;
   disabled?: boolean;
   options?: SelectOption[];
+  onchange?: (value: unknown) => void;
 }
 
 interface FormGroupProps {
@@ -29,14 +38,42 @@ interface FormGroupProps {
 export default function FormGroup({ items, onSubmit }: FormGroupProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
 
+  const [switchValues, setSwitchValues] = useState<Record<string, boolean>>({});
+  const [selectValues, setSelectValues] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setSwitchValues(
+      items.reduce((acc, item) => {
+        if (item.type === "switch") {
+          acc[item.id] =
+            item.defaultValue === undefined ? true : Boolean(item.defaultValue);
+        }
+        return acc;
+      }, {} as Record<string, boolean>),
+    );
+    setSelectValues(
+      items.reduce((acc, item) => {
+        if (item.type === "select") {
+          acc[item.id] =
+            typeof item.defaultValue === "string" ? item.defaultValue : "";
+        }
+        return acc;
+      }, {} as Record<string, string>),
+    );
+  }, [items]);
+
   const onFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    const values: Record<string, string | string[]> = {};
+    const values: Record<string, string | string[] | boolean> = {};
     items.forEach((item) => {
       if (item.type === "checkbox" && item.options) {
         const checkedValues = formData.getAll(item.id) as string[];
         values[item.id] = checkedValues;
+      } else if (item.type === "switch") {
+        values[item.id] = switchValues[item.id];
+      } else if (item.type === "select") {
+        values[item.id] = selectValues[item.id] ?? "";
       } else {
         const value = formData.get(item.id);
         if (value !== null) {
@@ -63,9 +100,10 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                   id={value.id}
                   name={value.id}
                   placeholder={value.label}
-                  defaultValue={value.defaultValue ?? ""}
+                  defaultValue={(value.defaultValue ?? "") as string}
                   required={(value.required ?? false) && !value.disabled}
                   disabled={value.disabled ?? false}
+                  onChange={(e) => value.onchange?.(e.target.value)}
                 />
               </div>
             )}
@@ -77,16 +115,19 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                   id={value.id}
                   name={value.id}
                   placeholder={value.label}
-                  defaultValue={value.defaultValue ?? ""}
+                  defaultValue={(value.defaultValue ?? "") as string}
                   required={(value.required ?? false) && !value.disabled}
                   disabled={value.disabled ?? false}
+                  onChange={(e) => value.onchange?.(e.target.value)}
                 />
               </div>
             )}
 
             {value.type === "checkbox" && value.options && (
               <div className="flex flex-col gap-2">
-                <Label htmlFor={value.id} className="mb-3">{value.label}</Label>
+                <Label htmlFor={value.id} className="mb-3">
+                  {value.label}
+                </Label>
                 {value.options.map((option, index) => {
                   let checked = false;
                   if (Array.isArray(value.defaultValue)) {
@@ -103,6 +144,7 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                         name={value.id}
                         value={option.value}
                         defaultChecked={checked}
+                        onCheckedChange={(e) => value.onchange?.(e)}
                       />
                       <Label htmlFor={`${value.id}_${option.value}`}>
                         {option.label}
@@ -110,6 +152,52 @@ export default function FormGroup({ items, onSubmit }: FormGroupProps) {
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {value.type === "switch" && (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={value.id}>{value.label}</Label>
+                <Switch
+                  id={value.id}
+                  name={value.id}
+                  checked={switchValues[value.id] ?? false}
+                  onCheckedChange={(checked) => {
+                    setSwitchValues((prev) => ({
+                      ...prev,
+                      [value.id]: checked,
+                    }));
+                    value.onchange?.(checked);
+                  }}
+                  disabled={value.disabled ?? false}
+                />
+              </div>
+            )}
+
+            {value.type === "select" && value.options && (
+              <div className="flex flex-col gap-2">
+                <Label htmlFor={value.id}>{value.label}</Label>
+                <Select
+                  value={selectValues[value.id] ?? ""}
+                  onValueChange={(val) => {
+                    setSelectValues((prev) => ({ ...prev, [value.id]: val }));
+                    value.onchange?.(val);
+                  }}
+                  disabled={value.disabled ?? false}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder={value.label} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {value.options.map((option, index) => {
+                      return (
+                        <SelectItem value={option.value} key={index}>
+                          {option.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectContent>
+                </Select>
               </div>
             )}
           </React.Fragment>
